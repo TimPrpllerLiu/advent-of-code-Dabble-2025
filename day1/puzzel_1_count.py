@@ -37,9 +37,8 @@ for index, change in enumerate(inputlist2):
         outputlist.append(sum_val)
     #print("sum output",sum_val)
 
-print(inputlist2[0:20])
-print(outputlist[0:20])
-print(outputlist2[0:20])
+#print(inputlist2[0:100])
+print(outputlist)
 print(count_zero) #1182
 
 
