@@ -1,0 +1,62 @@
+file_path = "roll_matrix.txt"
+with open(file_path, 'r') as file:
+    grid = [line.strip() for line in file.readlines()]
+#Compared to part 1, this part is adding a repeating workflow.
+ROWS = len(grid)
+COLS = len(grid[0])
+ROLL = '@'
+MARK = 'X'
+round_run = 1
+def count_accessible_rolls(grid):
+    accessible_count = 0
+    # Offsets for the 8 adjacent neighbors (dr, dc)
+    # (-1,-1) to (1,1), excluding (0,0)
+    neighbor_offsets = [
+        (-1, -1), (-1, 0), (-1, 1),
+        ( 0, -1),          ( 0, 1),
+        ( 1, -1), ( 1, 0), ( 1, 1),
+    ]
+    new_grid = list(grid)
+    updated_rows = {}
+    for r in range(ROWS):
+        current_row_list = list(new_grid[r])
+        for c in range(COLS):
+            
+            if current_row_list[c] == ROLL:
+                neighbor_rolls = 0
+                
+                # 2. Count adjacent rolls
+                for dr, dc in neighbor_offsets:
+                    nr, nc = r + dr, c + dc
+                    
+                    # 3. Check boundaries
+                    if 0 <= nr < ROWS and 0 <= nc < COLS:
+                        # 4. Check if the neighbor cell is also a roll
+                        # Check against the original (current) state of the grid
+                        if grid[nr][nc] == ROLL:
+                            neighbor_rolls += 1
+                            
+                # 5. Check Access
+                if neighbor_rolls < 4:
+                    accessible_count += 1
+                    
+                    # 6. FIX: Mutate the current row's list representation
+                    current_row_list[c] = MARK
+                    
+                    # Mark this row as needing an update to the final grid
+                    updated_rows[r] = "".join(current_row_list)
+                    
+        # Apply the update for the current row if a change was made
+        if r in updated_rows:
+            new_grid[r] = updated_rows[r]
+    return new_grid, accessible_count
+
+# Calculate the result for the example
+Total_count = 0
+grid, example_result = count_accessible_rolls(grid)
+while example_result > 0:
+    round_run +=1
+    Total_count = Total_count + example_result
+    grid,example_result = count_accessible_rolls(grid)
+print(f"The number of accessible total roll is: {Total_count}")
+print(f"The number of accessible total Run is: {round_run}")
